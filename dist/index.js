@@ -5,12 +5,13 @@ const zoomSlider = document.querySelector('#zoom');
 
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
-const num_tiles_h_x = 8;
-const num_tiles_h_y = 6;
-const num_tiles_v_x = 6;
-const num_tiles_v_y = 8;
-const tile_size = 13;
-const tileInfos = { horizontal: {}, vertical: {} };
+// Globals everywhere, horrible, I know, whatever, good enough for now
+let num_tiles_h_x;
+let num_tiles_h_y;
+let num_tiles_v_x;
+let num_tiles_v_y;
+let tile_size;
+let tileInfos = { horizontal: {}, vertical: {} };
 let imageData;
 
 function rgbToHex(val) { 
@@ -39,8 +40,16 @@ image.addEventListener('load', () => {
   ctx.imageSmoothingEnabled  = false;
   ctx.drawImage(image, 0, 0);
   imageData = ctx.getImageData(0, 0, image.width, image.height);
-  ctx.clearRect(0, 0, image.width, image.height);
+  ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   
+  const wangData = parseImageData(imageData.data);
+  tile_size = wangData.tile_size;
+  num_tiles_h_x = wangData.count_h_x;
+  num_tiles_h_y = wangData.count_h_y;
+  num_tiles_v_x = wangData.count_v_x;
+  num_tiles_v_y = wangData.count_v_y;
+
+  tileInfos = { horizontal: {}, vertical: {} };
   for(let y = 0; y < num_tiles_h_y; y++) {
     for(let x = 0; x < num_tiles_h_x; x++) {
       tileInfos.horizontal[`${x}_${y}`] = getTileInfo(x, y, true);
@@ -51,9 +60,87 @@ image.addEventListener('load', () => {
       tileInfos.vertical[`${x}_${y}`] = getTileInfo(x, y, false);
     }
   }
-  
   drawMap();
 });
+
+function parseImageData(imageData) {
+  // Count tiles
+  let tile_size = -2;
+  let count_h_x = 0;
+  let count_h_y = 0;
+  let count_v_x = 0;
+  let count_v_y = 0;
+
+  let currentPixel = 2;
+  // Count tile size
+  while(currentPixel <= image.height) {
+    const [ a, r, g, b ] = getPixelData(imageData, 0, currentPixel, image.width);
+    const color = fullColorHex(r, g, b);
+    if(color === 'ffffff') {
+      break;
+    }
+    tile_size++;
+    currentPixel++;
+  }
+  
+  currentPixel = 2;
+  let prevColor = '';
+  // Walk the pixels downards, count the white gaps between tiles and when the gap is bigger we have reached the end and start of vertical tiles
+  while(currentPixel <= image.height) {
+    const [ a, r, g, b ] = getPixelData(imageData, 0, currentPixel, image.width);
+    const color = fullColorHex(r, g, b);
+    if(color === 'ffffff') {
+      if(prevColor === 'ffffff') {
+        // We have reached the end
+        currentPixel += 2;
+        break;
+      }
+      count_h_y++;
+    }
+    prevColor = color;
+    currentPixel++;
+  }
+  // We continue going downwards but now count_v_y
+  while(currentPixel <= image.height) {
+    const [ a, r, g, b ] = getPixelData(imageData, 0, currentPixel, image.width);
+    const color = fullColorHex(r, g, b);
+    if(color === 'ffffff') {
+      count_v_y++;
+    }
+    currentPixel++;
+  }
+  // Now count from left to right count_h_x
+  currentPixel = 0;
+  while(currentPixel <= image.width) {
+    const [ a, r, g, b ] = getPixelData(imageData, currentPixel, 2, image.width);
+    const color = fullColorHex(r, g, b);
+    if(color === 'ffffff') {
+      count_h_x++;
+    }
+    currentPixel++;
+  }
+  // Lastly count_v_x
+  currentPixel = 0;
+  prevColor = '';
+  while(currentPixel <= image.width) {
+    const [ a, r, g, b ] = getPixelData(imageData, currentPixel, (tile_size + 3) * count_h_y + 4, image.width);
+    const color = fullColorHex(r, g, b);
+    if(color === 'ffffff') {
+      if(prevColor === 'ffffff') {
+        break;
+      }
+      count_v_x++;
+    }
+    prevColor = color;
+    currentPixel++;
+  }
+
+  return {
+    tile_size,
+    count_h_x, count_h_y,
+    count_v_x, count_v_y
+  };
+}
 
 function getValidTiles(constraints, type) {
   const validTiles = [];
@@ -110,7 +197,7 @@ function drawMap() {
         ctx.drawImage(image, tile_coords_x+1, tile_coords_y+1, tile_size*2, tile_size,
           x * tile_size * zoom, y * tile_size * zoom,
           tile_size*2*zoom, tile_size * zoom);
-
+          
         mapData[`${x}_${y}`] = {
           top: tileInfo.exits.topLeft,
           left: tileInfo.exits.left,
@@ -142,7 +229,7 @@ function drawMap() {
         ctx.drawImage(image, tile_coords_x+1, tile_coords_y+1, tile_size, tile_size*2,
           x * tile_size * zoom, y * tile_size * zoom,
           tile_size*zoom, tile_size*2*zoom);
-
+        
         mapData[`${x}_${y}`] = {
           left: tileInfo.exits.topLeft,
           top: tileInfo.exits.top,
@@ -172,11 +259,11 @@ function tilePosToPixelCoordinates(tx, ty, horizontal) {
   return { x, y }
 }
 
-function getPixelData(imageData, x, y, width, height) {
-  let r = imageData[(y * width + x) * 4 + 0];
-  let g = imageData[(y * width + x) * 4 + 1];
-  let b = imageData[(y * width + x) * 4 + 2];
-  let a = imageData[(y * width + x) * 4 + 3];
+function getPixelData(imageData, x, y, imageWidth) {
+  let r = imageData[(y * imageWidth + x) * 4 + 0];
+  let g = imageData[(y * imageWidth + x) * 4 + 1];
+  let b = imageData[(y * imageWidth + x) * 4 + 2];
+  let a = imageData[(y * imageWidth + x) * 4 + 3];
   return [ a, r, g, b ];
 }
 
