@@ -111,12 +111,17 @@ function parseImageData(imageData) {
   }
   // Now count from left to right count_h_x
   currentPixel = 0;
+  prevColor = '';
   while(currentPixel <= image.width) {
     const [ a, r, g, b ] = getPixelData(imageData, currentPixel, 2, image.width);
     const color = fullColorHex(r, g, b);
     if(color === 'ffffff') {
+      if(prevColor === 'ffffff') {
+        break;
+      }
       count_h_x++;
     }
+    prevColor = color;
     currentPixel++;
   }
   // Lastly count_v_x
@@ -197,7 +202,7 @@ function drawMap() {
         ctx.drawImage(image, tile_coords_x+1, tile_coords_y+1, tile_size*2, tile_size,
           x * tile_size * zoom, y * tile_size * zoom,
           tile_size*2*zoom, tile_size * zoom);
-          
+
         mapData[`${x}_${y}`] = {
           top: tileInfo.exits.topLeft,
           left: tileInfo.exits.left,
