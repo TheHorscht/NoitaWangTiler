@@ -1,0 +1,15 @@
+{
+  "name": "wangmaptiler",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "TheHorscht <realhorscht+github@gmail.com> (https://github.com/TheHorscht)",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "gh-pages": "^2.2.0",
+    "pngjs": "^5.0.0"
+  }
+}

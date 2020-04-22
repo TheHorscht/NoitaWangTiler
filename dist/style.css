@@ -1,0 +1,17 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  background: #cecadc;
+}
+#canvas {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+}
