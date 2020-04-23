@@ -2,6 +2,7 @@ const input = document.querySelector('#input');
 const canvas = document.querySelector('#canvas');
 const image = document.querySelector('#image');
 const zoomSlider = document.querySelector('#zoom');
+const highlight = document.querySelector('#highlight');
 
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
@@ -34,6 +35,10 @@ function assert(cond, msg) { if(!cond) throw new Error(msg); }
 window.addEventListener('load', () => {
   canvas.width = canvas.clientWidth;
   canvas.height = canvas.clientHeight;
+  canvas.addEventListener('mousemove', ev => {
+    highlight.style.left = ev.clientX + 'px';
+    highlight.style.top = ev.clientY + 'px';
+  })
 });
 
 image.addEventListener('load', () => { 
@@ -48,6 +53,9 @@ image.addEventListener('load', () => {
   num_tiles_h_y = wangData.count_h_y;
   num_tiles_v_x = wangData.count_v_x;
   num_tiles_v_y = wangData.count_v_y;
+
+  highlight.style.width = tile_size * 2 * zoomSlider.value + 'px';
+  highlight.style.height = tile_size * zoomSlider.value + 'px';
 
   tileInfos = { horizontal: {}, vertical: {} };
   for(let y = 0; y < num_tiles_h_y; y++) {
