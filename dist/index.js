@@ -31,9 +31,9 @@ function fullColorHex(r,g,b) {
 
 function assert(cond, msg) { if(!cond) throw new Error(msg); }
 
-window.addEventListener('load', () => { 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight; 
+window.addEventListener('load', () => {
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
 });
 
 image.addEventListener('load', () => { 
