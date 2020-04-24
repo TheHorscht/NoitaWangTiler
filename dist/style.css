@@ -23,8 +23,8 @@ img {
 }
 #highlight {
   position: absolute;
-  box-sizing: content-box;
   border: 2px solid red;
+  pointer-events: none;
 }
 #wrapper {
   display: flex;
@@ -32,6 +32,13 @@ img {
   width: 100%;
   height: -webkit-fill-available;
 }
+#canvasContainer {
+  position: relative;
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
 canvas {
+  width: 100%;
   flex: 1;
 }

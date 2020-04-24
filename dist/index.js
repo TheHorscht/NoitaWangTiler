@@ -35,10 +35,40 @@ function assert(cond, msg) { if(!cond) throw new Error(msg); }
 window.addEventListener('load', () => {
   canvas.width = canvas.clientWidth;
   canvas.height = canvas.clientHeight;
+  image.src = 'inside.png';
   canvas.addEventListener('mousemove', ev => {
-    highlight.style.left = ev.clientX + 'px';
-    highlight.style.top = ev.clientY + 'px';
-  })
+    const zoom = zoomSlider.value;
+    const borderSize = 2;
+    const mouseX = ev.offsetX;
+    const mouseY = ev.offsetY;
+    const tileX = Math.floor(mouseX / (tile_size * zoom));   
+    const tileY = Math.floor(mouseY / (tile_size * zoom));
+    const fddd = tileX - tileY;
+    console.log(tileX);
+    console.log(tileY);
+    
+    if(fddd % 4 == 0) {
+      highlight.style.width = tile_size * 2 * zoom + 'px';
+      highlight.style.height = tile_size * zoom + 'px';
+      highlight.style.left = tile_size * tileX * zoom - borderSize + 'px';
+      highlight.style.top = tile_size * tileY * zoom - borderSize + 'px';
+    } else if(fddd % 4 == 1 || fddd % 4 == -3) {
+      highlight.style.width = tile_size * 2 * zoom + 'px';
+      highlight.style.height = tile_size * zoom + 'px';
+      highlight.style.left = tile_size * (tileX - 1) * zoom - borderSize + 'px';
+      highlight.style.top = tile_size * tileY * zoom - borderSize + 'px';
+    } else if(fddd % 4 == 2 || fddd % 4 == -2) {
+      highlight.style.width = tile_size * zoom + 'px';
+      highlight.style.height = tile_size * 2 * zoom + 'px';
+      highlight.style.left = tile_size * tileX * zoom - borderSize + 'px';
+      highlight.style.top = tile_size * (tileY - 1) * zoom - borderSize + 'px';
+    } else if(fddd % 4 == 3 || fddd % 4 == -1) {
+      highlight.style.width = tile_size * zoom + 'px';
+      highlight.style.height = tile_size * 2 * zoom + 'px';
+      highlight.style.left = tile_size * tileX * zoom - borderSize + 'px';
+      highlight.style.top = tile_size * tileY * zoom - borderSize + 'px';
+    }
+  });
 });
 
 image.addEventListener('load', () => { 
