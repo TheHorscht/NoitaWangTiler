@@ -46,7 +46,7 @@ window.addEventListener('load', () => {
     const tileY = Math.floor(mouseY / (tile_size * zoom));
     const idk = tileX - tileY;
     
-    highlightSpan.innerText = (mapData[`${tileX}_${tileY}`].tilePos.x + 1) + ', ' + (mapData[`${tileX}_${tileY}`].tilePos.y + 1);
+    highlightSpan.innerText = (mapData[`${tileX}_${tileY}`].tilePos.x + 1) + ',' + (mapData[`${tileX}_${tileY}`].tilePos.y + 1);
     if(idk % 4 == 0) {
       highlight.style.width = tile_size * 2 * zoom + 'px';
       highlight.style.height = tile_size * zoom + 'px';
@@ -94,6 +94,7 @@ image.addEventListener('load', () => {
 
   highlight.style.width = tile_size * 2 * zoomSlider.value + 'px';
   highlight.style.height = tile_size * zoomSlider.value + 'px';
+  highlight.className = 'zoom-level-' + zoomSlider.value;
 
   tileInfos = { horizontal: {}, vertical: {} };
   for(let y = 0; y < num_tiles_h_y; y++) {
@@ -107,6 +108,15 @@ image.addEventListener('load', () => {
     }
   }
   drawMap();
+});
+
+zoomSlider.addEventListener('input', () => {
+  if(image.complete) {
+    highlight.style.width = tile_size * 2 * zoomSlider.value + 'px';
+    highlight.style.height = tile_size * zoomSlider.value + 'px';
+    highlight.className = 'zoom-level-' + zoomSlider.value;
+    drawMap();
+  }
 });
 
 function parseImageData(imageData) {
@@ -221,8 +231,12 @@ function drawMap() {
   const zoom = zoomSlider.value;
   ctx.lineWidth = '1';
   ctx.strokeStyle = 'red';
-  for(let y = -1; y < 20; y++) {
-    for(let x = -1; x < 38; x++) {
+
+  let amountToDrawX = canvas.width / tile_size / zoom;
+  let amountToDrawY = canvas.height / tile_size / zoom;  
+
+  for(let y = -1; y < amountToDrawY; y++) {
+    for(let x = -1; x < amountToDrawX; x++) {
       // Horizontal
       if((x - y) % 4 == 0) {
         const constraints = { exits: {} };
