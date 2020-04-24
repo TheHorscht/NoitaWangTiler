@@ -2,6 +2,8 @@ const input = document.querySelector('#input');
 const canvas = document.querySelector('#canvas');
 const image = document.querySelector('#image');
 const zoomSlider = document.querySelector('#zoom');
+const highlight = document.querySelector('#highlight');
+const highlightSpan = highlight.querySelector('span');
 
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
@@ -13,6 +15,7 @@ let num_tiles_v_y;
 let tile_size;
 let tileInfos = { horizontal: {}, vertical: {} };
 let imageData;
+let mapData = {};
 
 function rgbToHex(val) { 
   let hex = Number(val).toString(16);
@@ -31,9 +34,49 @@ function fullColorHex(r,g,b) {
 
 function assert(cond, msg) { if(!cond) throw new Error(msg); }
 
-window.addEventListener('load', () => { 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight; 
+window.addEventListener('load', () => {
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+  image.src = 'inside.png';
+  canvas.addEventListener('mousemove', ev => {
+    const zoom = zoomSlider.value;
+    const mouseX = ev.offsetX;
+    const mouseY = ev.offsetY;
+    const tileX = Math.floor(mouseX / (tile_size * zoom));   
+    const tileY = Math.floor(mouseY / (tile_size * zoom));
+    const idk = tileX - tileY;
+    
+    highlightSpan.innerText = (mapData[`${tileX}_${tileY}`].tilePos.x + 1) + ', ' + (mapData[`${tileX}_${tileY}`].tilePos.y + 1);
+    if(idk % 4 == 0) {
+      highlight.style.width = tile_size * 2 * zoom + 'px';
+      highlight.style.height = tile_size * zoom + 'px';
+      highlight.style.left = tile_size * tileX * zoom + 'px';
+      highlight.style.top = tile_size * tileY * zoom + 'px';
+      highlightSpan.style.justifySelf = 'start';
+      highlightSpan.style.alignSelf = 'start';
+    } else if(idk % 4 == 1 || idk % 4 == -3) {
+      highlight.style.width = tile_size * 2 * zoom + 'px';
+      highlight.style.height = tile_size * zoom + 'px';
+      highlight.style.left = tile_size * (tileX - 1) * zoom + 'px';
+      highlight.style.top = tile_size * tileY * zoom + 'px';
+      highlightSpan.style.justifySelf = 'end';
+      highlightSpan.style.alignSelf = 'end';
+    } else if(idk % 4 == 2 || idk % 4 == -2) {
+      highlight.style.width = tile_size * zoom + 'px';
+      highlight.style.height = tile_size * 2 * zoom + 'px';
+      highlight.style.left = tile_size * tileX * zoom + 'px';
+      highlight.style.top = tile_size * (tileY - 1) * zoom + 'px';
+      highlightSpan.style.justifySelf = 'end';
+      highlightSpan.style.alignSelf = 'end';
+    } else if(idk % 4 == 3 || idk % 4 == -1) {
+      highlight.style.width = tile_size * zoom + 'px';
+      highlight.style.height = tile_size * 2 * zoom + 'px';
+      highlight.style.left = tile_size * tileX * zoom + 'px';
+      highlight.style.top = tile_size * tileY * zoom + 'px';
+      highlightSpan.style.justifySelf = 'start';
+      highlightSpan.style.alignSelf = 'start';
+    }
+  });
 });
 
 image.addEventListener('load', () => { 
@@ -48,6 +91,9 @@ image.addEventListener('load', () => {
   num_tiles_h_y = wangData.count_h_y;
   num_tiles_v_x = wangData.count_v_x;
   num_tiles_v_y = wangData.count_v_y;
+
+  highlight.style.width = tile_size * 2 * zoomSlider.value + 'px';
+  highlight.style.height = tile_size * zoomSlider.value + 'px';
 
   tileInfos = { horizontal: {}, vertical: {} };
   for(let y = 0; y < num_tiles_h_y; y++) {
@@ -171,7 +217,7 @@ function getValidTiles(constraints, type) {
 }
 
 function drawMap() {
-  const mapData = {};
+  mapData = {};
   const zoom = zoomSlider.value;
   ctx.lineWidth = '1';
   ctx.strokeStyle = 'red';
@@ -204,11 +250,15 @@ function drawMap() {
           tile_size*2*zoom, tile_size * zoom);
 
         mapData[`${x}_${y}`] = {
+          tilePos: { type: 'horizontal', x:randomTile.x, y:randomTile.y },
+          tileInfo,
           top: tileInfo.exits.topLeft,
           left: tileInfo.exits.left,
           bottom: tileInfo.exits.bottomLeft,
         }
         mapData[`${x+1}_${y}`] = {
+          tilePos: { type: 'horizontal', x:randomTile.x, y:randomTile.y },
+          tileInfo,
           top: tileInfo.exits.topRight,
           right: tileInfo.exits.right,
           bottom: tileInfo.exits.bottomRight,
@@ -236,11 +286,15 @@ function drawMap() {
           tile_size*zoom, tile_size*2*zoom);
         
         mapData[`${x}_${y}`] = {
+          tilePos: { type: 'vertical', x:randomTile.x, y:randomTile.y },
+          tileInfo,
           left: tileInfo.exits.topLeft,
           top: tileInfo.exits.top,
           right: tileInfo.exits.topRight,
         }
         mapData[`${x}_${y+1}`] = {
+          tilePos: { type: 'vertical', x:randomTile.x, y:randomTile.y },
+          tileInfo,
           left: tileInfo.exits.bottomLeft,
           bottom: tileInfo.exits.bottom,
           right: tileInfo.exits.bottomRight,

@@ -1,3 +1,9 @@
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+}
 html, body {
   padding: 0;
   margin: 0;
@@ -14,4 +20,32 @@ img {
   top: 0;
   left: 0;
   visibility: hidden;
+}
+#highlight {
+  display: grid;
+  position: absolute;
+  outline: 2px solid red;
+  color: white;
+  text-shadow: -1px -1px black, 1px 1px black, -1px 1px black, 1px -1px black;
+  pointer-events: none;
+  font-family: sans-serif;
+  font-size: 20px;
+  box-sizing: border-box;
+  padding: 1px 3px;
+}
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: -webkit-fill-available;
+}
+#canvasContainer {
+  position: relative;
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+canvas {
+  width: 100%;
+  flex: 1;
 }
