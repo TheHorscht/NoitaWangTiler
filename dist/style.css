@@ -23,7 +23,7 @@ img {
 }
 #highlight {
   position: absolute;
-  border: 2px dashed #aca7f3;
+  outline: 2px solid red;
   color: white;
   text-shadow: -1px -1px black, 1px 1px black, -1px 1px black, 1px -1px black;
   pointer-events: none;
