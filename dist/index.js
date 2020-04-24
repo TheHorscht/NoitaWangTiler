@@ -14,6 +14,7 @@ let num_tiles_v_y;
 let tile_size;
 let tileInfos = { horizontal: {}, vertical: {} };
 let imageData;
+let mapData = {};
 
 function rgbToHex(val) { 
   let hex = Number(val).toString(16);
@@ -38,7 +39,6 @@ window.addEventListener('load', () => {
   image.src = 'inside.png';
   canvas.addEventListener('mousemove', ev => {
     const zoom = zoomSlider.value;
-    const borderSize = 2;
     const mouseX = ev.offsetX;
     const mouseY = ev.offsetY;
     const tileX = Math.floor(mouseX / (tile_size * zoom));   
@@ -47,26 +47,27 @@ window.addEventListener('load', () => {
     console.log(tileX);
     console.log(tileY);
     
+    highlight.innerHTML = mapData[`${tileX}_${tileY}`].tilePos.x + ', ' + mapData[`${tileX}_${tileY}`].tilePos.y;
     if(fddd % 4 == 0) {
       highlight.style.width = tile_size * 2 * zoom + 'px';
       highlight.style.height = tile_size * zoom + 'px';
-      highlight.style.left = tile_size * tileX * zoom - borderSize + 'px';
-      highlight.style.top = tile_size * tileY * zoom - borderSize + 'px';
+      highlight.style.left = tile_size * tileX * zoom + 'px';
+      highlight.style.top = tile_size * tileY * zoom + 'px';
     } else if(fddd % 4 == 1 || fddd % 4 == -3) {
       highlight.style.width = tile_size * 2 * zoom + 'px';
       highlight.style.height = tile_size * zoom + 'px';
-      highlight.style.left = tile_size * (tileX - 1) * zoom - borderSize + 'px';
-      highlight.style.top = tile_size * tileY * zoom - borderSize + 'px';
+      highlight.style.left = tile_size * (tileX - 1) * zoom + 'px';
+      highlight.style.top = tile_size * tileY * zoom + 'px';
     } else if(fddd % 4 == 2 || fddd % 4 == -2) {
       highlight.style.width = tile_size * zoom + 'px';
       highlight.style.height = tile_size * 2 * zoom + 'px';
-      highlight.style.left = tile_size * tileX * zoom - borderSize + 'px';
-      highlight.style.top = tile_size * (tileY - 1) * zoom - borderSize + 'px';
+      highlight.style.left = tile_size * tileX * zoom + 'px';
+      highlight.style.top = tile_size * (tileY - 1) * zoom + 'px';
     } else if(fddd % 4 == 3 || fddd % 4 == -1) {
       highlight.style.width = tile_size * zoom + 'px';
       highlight.style.height = tile_size * 2 * zoom + 'px';
-      highlight.style.left = tile_size * tileX * zoom - borderSize + 'px';
-      highlight.style.top = tile_size * tileY * zoom - borderSize + 'px';
+      highlight.style.left = tile_size * tileX * zoom + 'px';
+      highlight.style.top = tile_size * tileY * zoom + 'px';
     }
   });
 });
@@ -209,7 +210,7 @@ function getValidTiles(constraints, type) {
 }
 
 function drawMap() {
-  const mapData = {};
+  mapData = {};
   const zoom = zoomSlider.value;
   ctx.lineWidth = '1';
   ctx.strokeStyle = 'red';
@@ -242,11 +243,15 @@ function drawMap() {
           tile_size*2*zoom, tile_size * zoom);
 
         mapData[`${x}_${y}`] = {
+          tilePos: { type: 'horizontal', x, y },
+          tileInfo,
           top: tileInfo.exits.topLeft,
           left: tileInfo.exits.left,
           bottom: tileInfo.exits.bottomLeft,
         }
         mapData[`${x+1}_${y}`] = {
+          tilePos: { type: 'horizontal', x, y },
+          tileInfo,
           top: tileInfo.exits.topRight,
           right: tileInfo.exits.right,
           bottom: tileInfo.exits.bottomRight,
@@ -274,11 +279,15 @@ function drawMap() {
           tile_size*zoom, tile_size*2*zoom);
         
         mapData[`${x}_${y}`] = {
+          tilePos: { type: 'vertical', x, y },
+          tileInfo,
           left: tileInfo.exits.topLeft,
           top: tileInfo.exits.top,
           right: tileInfo.exits.topRight,
         }
         mapData[`${x}_${y+1}`] = {
+          tilePos: { type: 'vertical', x, y },
+          tileInfo,
           left: tileInfo.exits.bottomLeft,
           bottom: tileInfo.exits.bottom,
           right: tileInfo.exits.bottomRight,
