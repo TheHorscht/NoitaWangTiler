@@ -3,6 +3,7 @@ const canvas = document.querySelector('#canvas');
 const image = document.querySelector('#image');
 const zoomSlider = document.querySelector('#zoom');
 const highlight = document.querySelector('#highlight');
+const highlightSpan = highlight.querySelector('span');
 
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
@@ -43,31 +44,37 @@ window.addEventListener('load', () => {
     const mouseY = ev.offsetY;
     const tileX = Math.floor(mouseX / (tile_size * zoom));   
     const tileY = Math.floor(mouseY / (tile_size * zoom));
-    const fddd = tileX - tileY;
-    console.log(tileX);
-    console.log(tileY);
+    const idk = tileX - tileY;
     
-    highlight.innerHTML = mapData[`${tileX}_${tileY}`].tilePos.x + ', ' + mapData[`${tileX}_${tileY}`].tilePos.y;
-    if(fddd % 4 == 0) {
+    highlightSpan.innerText = (mapData[`${tileX}_${tileY}`].tilePos.x + 1) + ', ' + (mapData[`${tileX}_${tileY}`].tilePos.y + 1);
+    if(idk % 4 == 0) {
       highlight.style.width = tile_size * 2 * zoom + 'px';
       highlight.style.height = tile_size * zoom + 'px';
       highlight.style.left = tile_size * tileX * zoom + 'px';
       highlight.style.top = tile_size * tileY * zoom + 'px';
-    } else if(fddd % 4 == 1 || fddd % 4 == -3) {
+      highlightSpan.style.justifySelf = 'start';
+      highlightSpan.style.alignSelf = 'start';
+    } else if(idk % 4 == 1 || idk % 4 == -3) {
       highlight.style.width = tile_size * 2 * zoom + 'px';
       highlight.style.height = tile_size * zoom + 'px';
       highlight.style.left = tile_size * (tileX - 1) * zoom + 'px';
       highlight.style.top = tile_size * tileY * zoom + 'px';
-    } else if(fddd % 4 == 2 || fddd % 4 == -2) {
+      highlightSpan.style.justifySelf = 'end';
+      highlightSpan.style.alignSelf = 'end';
+    } else if(idk % 4 == 2 || idk % 4 == -2) {
       highlight.style.width = tile_size * zoom + 'px';
       highlight.style.height = tile_size * 2 * zoom + 'px';
       highlight.style.left = tile_size * tileX * zoom + 'px';
       highlight.style.top = tile_size * (tileY - 1) * zoom + 'px';
-    } else if(fddd % 4 == 3 || fddd % 4 == -1) {
+      highlightSpan.style.justifySelf = 'end';
+      highlightSpan.style.alignSelf = 'end';
+    } else if(idk % 4 == 3 || idk % 4 == -1) {
       highlight.style.width = tile_size * zoom + 'px';
       highlight.style.height = tile_size * 2 * zoom + 'px';
       highlight.style.left = tile_size * tileX * zoom + 'px';
       highlight.style.top = tile_size * tileY * zoom + 'px';
+      highlightSpan.style.justifySelf = 'start';
+      highlightSpan.style.alignSelf = 'start';
     }
   });
 });
@@ -243,14 +250,14 @@ function drawMap() {
           tile_size*2*zoom, tile_size * zoom);
 
         mapData[`${x}_${y}`] = {
-          tilePos: { type: 'horizontal', x, y },
+          tilePos: { type: 'horizontal', x:randomTile.x, y:randomTile.y },
           tileInfo,
           top: tileInfo.exits.topLeft,
           left: tileInfo.exits.left,
           bottom: tileInfo.exits.bottomLeft,
         }
         mapData[`${x+1}_${y}`] = {
-          tilePos: { type: 'horizontal', x, y },
+          tilePos: { type: 'horizontal', x:randomTile.x, y:randomTile.y },
           tileInfo,
           top: tileInfo.exits.topRight,
           right: tileInfo.exits.right,
@@ -279,14 +286,14 @@ function drawMap() {
           tile_size*zoom, tile_size*2*zoom);
         
         mapData[`${x}_${y}`] = {
-          tilePos: { type: 'vertical', x, y },
+          tilePos: { type: 'vertical', x:randomTile.x, y:randomTile.y },
           tileInfo,
           left: tileInfo.exits.topLeft,
           top: tileInfo.exits.top,
           right: tileInfo.exits.topRight,
         }
         mapData[`${x}_${y+1}`] = {
-          tilePos: { type: 'vertical', x, y },
+          tilePos: { type: 'vertical', x:randomTile.x, y:randomTile.y },
           tileInfo,
           left: tileInfo.exits.bottomLeft,
           bottom: tileInfo.exits.bottom,
