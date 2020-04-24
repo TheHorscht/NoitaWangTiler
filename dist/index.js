@@ -2,6 +2,7 @@ const input = document.querySelector('#input');
 const canvas = document.querySelector('#canvas');
 const image = document.querySelector('#image');
 const zoomSlider = document.querySelector('#zoom');
+const regenerateButton = document.querySelector('#regenerate');
 const highlight = document.querySelector('#highlight');
 const highlightSpan = highlight.querySelector('span');
 
@@ -115,6 +116,12 @@ zoomSlider.addEventListener('input', () => {
     highlight.style.width = tile_size * 2 * zoomSlider.value + 'px';
     highlight.style.height = tile_size * zoomSlider.value + 'px';
     highlight.className = 'zoom-level-' + zoomSlider.value;
+    drawMap();
+  }
+});
+
+regenerateButton.addEventListener('click', () => {
+  if(image.complete) {
     drawMap();
   }
 });
