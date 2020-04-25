@@ -278,9 +278,9 @@ function drawMap() {
         }
 
         let validTiles = getValidTiles(constraints, 'horizontal');
-        const randomIndex = Math.floor(rng(x, y) * validTiles.length); //Math.floor(Math.random() * validTiles.length);
+        const randomIndex = Math.floor(rng(x, y) * validTiles.length);
         const randomTile = validTiles[randomIndex];
-        const tileInfo = tileInfos.horizontal[`${randomTile.x}_${randomTile.y}`]; //getTileInfo(tile_pick_x, tile_pick_y, true);
+        const tileInfo = tileInfos.horizontal[`${randomTile.x}_${randomTile.y}`];
         const { x:tile_coords_x, y:tile_coords_y } = tilePosToPixelCoordinates(randomTile.x, randomTile.y, true);
         ctx.drawImage(image, tile_coords_x+1, tile_coords_y+1, tileSize*2, tileSize,
           x * tileSize * zoom, y * tileSize * zoom,
