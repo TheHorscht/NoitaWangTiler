@@ -5,7 +5,8 @@ const canvas = document.querySelector('#canvas');
 const image = document.querySelector('#image');
 const zoomSlider = document.querySelector('#zoom');
 const seedInput = document.querySelector('#seed');
-const regenerateButton = document.querySelector('#regenerate');
+const loadSeedButton = document.querySelector('input#loadSeed');
+const newSeedButton = document.querySelector('input#newSeed');
 const highlight = document.querySelector('#highlight');
 const highlightSpan = highlight.querySelector('span');
 
@@ -126,9 +127,17 @@ zoomSlider.addEventListener('input', () => {
   }
 });
 
-regenerateButton.addEventListener('click', () => {
+loadSeedButton.addEventListener('click', () => {
+  rng = prng_create(seedInput.value);
   if(image.complete) {
-    rng = prng_create(seedInput.value);
+    drawMap();
+  }
+});
+
+newSeedButton.addEventListener('click', () => {
+  seedInput.value = number_to_hash(Math.random());
+  rng = prng_create(seedInput.value);
+  if(image.complete) {
     drawMap();
   }
 });

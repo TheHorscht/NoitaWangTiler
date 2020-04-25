@@ -12,8 +12,9 @@
     <div class="controls">
       <input type="file" id="input">
       <label>Zoom <input type="range" id="zoom" min="1" max="8" value="4"></label>
-      <input type="text" id="seed">
-      <input type="button" value="Re-Generate" id="regenerate">
+      <label>Seed <input type="text" id="seed" maxlength="8" size="8"></label>
+      <input type="button" value="Load seed" id="loadSeed">
+      <input type="button" value="Generate new seed" id="newSeed">
     </div>
     <div id="canvasContainer">
       <div id="highlight"><span></span></div>
