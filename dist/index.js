@@ -1,14 +1,16 @@
+import { prng_create, number_to_hash } from "./random.js";
+
 const input = document.querySelector('#input');
 const canvas = document.querySelector('#canvas');
 const image = document.querySelector('#image');
 const zoomSlider = document.querySelector('#zoom');
+const seedInput = document.querySelector('#seed');
 const regenerateButton = document.querySelector('#regenerate');
 const highlight = document.querySelector('#highlight');
 const highlightSpan = highlight.querySelector('span');
 
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
-// Globals everywhere, horrible, I know, whatever, good enough for now
 let num_tiles_h_x;
 let num_tiles_h_y;
 let num_tiles_v_x;
@@ -17,6 +19,8 @@ let tile_size;
 let tileInfos = { horizontal: {}, vertical: {} };
 let imageData;
 let mapData = {};
+seedInput.value = '';
+let rng = prng_create("hello");
 
 function rgbToHex(val) { 
   let hex = Number(val).toString(16);
@@ -39,6 +43,8 @@ window.addEventListener('load', () => {
   canvas.width = canvas.clientWidth;
   canvas.height = canvas.clientHeight;
   image.src = 'inside.png';
+  seedInput.value = number_to_hash(Math.random());
+  rng = prng_create(seedInput.value);
   canvas.addEventListener('mousemove', ev => {
     const zoom = zoomSlider.value;
     const mouseX = ev.offsetX;
@@ -122,6 +128,7 @@ zoomSlider.addEventListener('input', () => {
 
 regenerateButton.addEventListener('click', () => {
   if(image.complete) {
+    rng = prng_create(seedInput.value);
     drawMap();
   }
 });
@@ -262,7 +269,7 @@ function drawMap() {
         }
 
         let validTiles = getValidTiles(constraints, 'horizontal');
-        const randomIndex = Math.floor(Math.random() * validTiles.length);
+        const randomIndex = Math.floor(rng(x, y) * validTiles.length); //Math.floor(Math.random() * validTiles.length);
         const randomTile = validTiles[randomIndex];
         const tileInfo = tileInfos.horizontal[`${randomTile.x}_${randomTile.y}`]; //getTileInfo(tile_pick_x, tile_pick_y, true);
         const { x:tile_coords_x, y:tile_coords_y } = tilePosToPixelCoordinates(randomTile.x, randomTile.y, true);
@@ -297,7 +304,7 @@ function drawMap() {
         }
 
         let validTiles = getValidTiles(constraints, 'vertical');
-        const randomIndex = Math.floor(Math.random() * validTiles.length);
+        const randomIndex = Math.floor(rng(x, y) * validTiles.length); //Math.floor(Math.random() * validTiles.length);
         const randomTile = validTiles[randomIndex];
         const tileInfo = tileInfos.vertical[`${randomTile.x}_${randomTile.y}`];
 
