@@ -16,7 +16,7 @@ let num_tiles_h_x;
 let num_tiles_h_y;
 let num_tiles_v_x;
 let num_tiles_v_y;
-let tile_size;
+let tileSize;
 let tileInfos = { horizontal: {}, vertical: {} };
 let imageData;
 let mapData = {};
@@ -50,37 +50,37 @@ window.addEventListener('load', () => {
     const zoom = zoomSlider.value;
     const mouseX = ev.offsetX;
     const mouseY = ev.offsetY;
-    const tileX = Math.floor(mouseX / (tile_size * zoom));   
-    const tileY = Math.floor(mouseY / (tile_size * zoom));
+    const tileX = Math.floor(mouseX / (tileSize * zoom));   
+    const tileY = Math.floor(mouseY / (tileSize * zoom));
     const idk = tileX - tileY;
     
     highlightSpan.innerText = (mapData[`${tileX}_${tileY}`].tilePos.x + 1) + ',' + (mapData[`${tileX}_${tileY}`].tilePos.y + 1);
     if(idk % 4 == 0) {
-      highlight.style.width = tile_size * 2 * zoom + 'px';
-      highlight.style.height = tile_size * zoom + 'px';
-      highlight.style.left = tile_size * tileX * zoom + 'px';
-      highlight.style.top = tile_size * tileY * zoom + 'px';
+      highlight.style.width = tileSize * 2 * zoom + 'px';
+      highlight.style.height = tileSize * zoom + 'px';
+      highlight.style.left = tileSize * tileX * zoom + 'px';
+      highlight.style.top = tileSize * tileY * zoom + 'px';
       highlightSpan.style.justifySelf = 'start';
       highlightSpan.style.alignSelf = 'start';
     } else if(idk % 4 == 1 || idk % 4 == -3) {
-      highlight.style.width = tile_size * 2 * zoom + 'px';
-      highlight.style.height = tile_size * zoom + 'px';
-      highlight.style.left = tile_size * (tileX - 1) * zoom + 'px';
-      highlight.style.top = tile_size * tileY * zoom + 'px';
+      highlight.style.width = tileSize * 2 * zoom + 'px';
+      highlight.style.height = tileSize * zoom + 'px';
+      highlight.style.left = tileSize * (tileX - 1) * zoom + 'px';
+      highlight.style.top = tileSize * tileY * zoom + 'px';
       highlightSpan.style.justifySelf = 'end';
       highlightSpan.style.alignSelf = 'end';
     } else if(idk % 4 == 2 || idk % 4 == -2) {
-      highlight.style.width = tile_size * zoom + 'px';
-      highlight.style.height = tile_size * 2 * zoom + 'px';
-      highlight.style.left = tile_size * tileX * zoom + 'px';
-      highlight.style.top = tile_size * (tileY - 1) * zoom + 'px';
+      highlight.style.width = tileSize * zoom + 'px';
+      highlight.style.height = tileSize * 2 * zoom + 'px';
+      highlight.style.left = tileSize * tileX * zoom + 'px';
+      highlight.style.top = tileSize * (tileY - 1) * zoom + 'px';
       highlightSpan.style.justifySelf = 'end';
       highlightSpan.style.alignSelf = 'end';
     } else if(idk % 4 == 3 || idk % 4 == -1) {
-      highlight.style.width = tile_size * zoom + 'px';
-      highlight.style.height = tile_size * 2 * zoom + 'px';
-      highlight.style.left = tile_size * tileX * zoom + 'px';
-      highlight.style.top = tile_size * tileY * zoom + 'px';
+      highlight.style.width = tileSize * zoom + 'px';
+      highlight.style.height = tileSize * 2 * zoom + 'px';
+      highlight.style.left = tileSize * tileX * zoom + 'px';
+      highlight.style.top = tileSize * tileY * zoom + 'px';
       highlightSpan.style.justifySelf = 'start';
       highlightSpan.style.alignSelf = 'start';
     }
@@ -94,14 +94,14 @@ image.addEventListener('load', () => {
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   
   const wangData = parseImageData(imageData.data);
-  tile_size = wangData.tile_size;
+  tileSize = wangData.tileSize;
   num_tiles_h_x = wangData.count_h_x;
   num_tiles_h_y = wangData.count_h_y;
   num_tiles_v_x = wangData.count_v_x;
   num_tiles_v_y = wangData.count_v_y;
 
-  highlight.style.width = tile_size * 2 * zoomSlider.value + 'px';
-  highlight.style.height = tile_size * zoomSlider.value + 'px';
+  highlight.style.width = tileSize * 2 * zoomSlider.value + 'px';
+  highlight.style.height = tileSize * zoomSlider.value + 'px';
   highlight.className = 'zoom-level-' + zoomSlider.value;
 
   tileInfos = { horizontal: {}, vertical: {} };
@@ -120,8 +120,8 @@ image.addEventListener('load', () => {
 
 zoomSlider.addEventListener('input', () => {
   if(image.complete) {
-    highlight.style.width = tile_size * 2 * zoomSlider.value + 'px';
-    highlight.style.height = tile_size * zoomSlider.value + 'px';
+    highlight.style.width = tileSize * 2 * zoomSlider.value + 'px';
+    highlight.style.height = tileSize * zoomSlider.value + 'px';
     highlight.className = 'zoom-level-' + zoomSlider.value;
     drawMap();
   }
@@ -144,7 +144,7 @@ newSeedButton.addEventListener('click', () => {
 
 function parseImageData(imageData) {
   // Count tiles
-  let tile_size = -2;
+  let tileSize = -2;
   let count_h_x = 0;
   let count_h_y = 0;
   let count_v_x = 0;
@@ -158,7 +158,7 @@ function parseImageData(imageData) {
     if(color === 'ffffff') {
       break;
     }
-    tile_size++;
+    tileSize++;
     currentPixel++;
   }
   
@@ -207,7 +207,7 @@ function parseImageData(imageData) {
   currentPixel = 0;
   prevColor = '';
   while(currentPixel <= image.width) {
-    const [ a, r, g, b ] = getPixelData(imageData, currentPixel, (tile_size + 3) * count_h_y + 4, image.width);
+    const [ a, r, g, b ] = getPixelData(imageData, currentPixel, (tileSize + 3) * count_h_y + 4, image.width);
     const color = fullColorHex(r, g, b);
     if(color === 'ffffff') {
       if(prevColor === 'ffffff') {
@@ -220,7 +220,7 @@ function parseImageData(imageData) {
   }
 
   return {
-    tile_size,
+    tileSize,
     count_h_x, count_h_y,
     count_v_x, count_v_y
   };
@@ -234,8 +234,8 @@ function getValidTiles(constraints, type) {
     for(let x = 0; x < max_x; x++) {
       const tileInfo = tileInfos[type][`${x}_${y}`];
       let failed = false;
-      for(let [key, value] of Object.entries(constraints.exits)) {
-        if(tileInfo.exits[key] != value) {
+      for(let [key, value] of Object.entries(constraints.edges)) {
+        if(tileInfo.edges[key] != value) {
           failed = true;
           break;
         }
@@ -255,26 +255,26 @@ function drawMap() {
   ctx.lineWidth = '1';
   ctx.strokeStyle = 'red';
 
-  let amountToDrawX = canvas.width / tile_size / zoom;
-  let amountToDrawY = canvas.height / tile_size / zoom;  
+  let amountToDrawX = canvas.width / tileSize / zoom;
+  let amountToDrawY = canvas.height / tileSize / zoom;  
 
   for(let y = -1; y < amountToDrawY; y++) {
     for(let x = -1; x < amountToDrawX; x++) {
       // Horizontal
       if((x - y) % 4 == 0) {
-        const constraints = { exits: {} };
+        const constraints = { edges: {} };
 
         if(mapData[`${x-1}_${y}`] != undefined) {
-          constraints.exits.left = mapData[`${x-1}_${y}`].right;
+          constraints.edges.left = mapData[`${x-1}_${y}`].right;
         }
         if(mapData[`${x}_${y-1}`] != undefined) {
-          constraints.exits.topLeft = mapData[`${x}_${y-1}`].bottom;
+          constraints.edges.topLeft = mapData[`${x}_${y-1}`].bottom;
         }
         if(mapData[`${x+1}_${y-1}`] != undefined) {
-          constraints.exits.topRight = mapData[`${x+1}_${y-1}`].bottom;
+          constraints.edges.topRight = mapData[`${x+1}_${y-1}`].bottom;
         }
         if(mapData[`${x+2}_${y}`] != undefined) {
-          constraints.exits.right = mapData[`${x+2}_${y}`].left;
+          constraints.edges.right = mapData[`${x+2}_${y}`].left;
         }
 
         let validTiles = getValidTiles(constraints, 'horizontal');
@@ -282,34 +282,34 @@ function drawMap() {
         const randomTile = validTiles[randomIndex];
         const tileInfo = tileInfos.horizontal[`${randomTile.x}_${randomTile.y}`]; //getTileInfo(tile_pick_x, tile_pick_y, true);
         const { x:tile_coords_x, y:tile_coords_y } = tilePosToPixelCoordinates(randomTile.x, randomTile.y, true);
-        ctx.drawImage(image, tile_coords_x+1, tile_coords_y+1, tile_size*2, tile_size,
-          x * tile_size * zoom, y * tile_size * zoom,
-          tile_size*2*zoom, tile_size * zoom);
+        ctx.drawImage(image, tile_coords_x+1, tile_coords_y+1, tileSize*2, tileSize,
+          x * tileSize * zoom, y * tileSize * zoom,
+          tileSize*2*zoom, tileSize * zoom);
 
         mapData[`${x}_${y}`] = {
           tilePos: { type: 'horizontal', x:randomTile.x, y:randomTile.y },
           tileInfo,
-          top: tileInfo.exits.topLeft,
-          left: tileInfo.exits.left,
-          bottom: tileInfo.exits.bottomLeft,
+          top: tileInfo.edges.topLeft,
+          left: tileInfo.edges.left,
+          bottom: tileInfo.edges.bottomLeft,
         }
         mapData[`${x+1}_${y}`] = {
           tilePos: { type: 'horizontal', x:randomTile.x, y:randomTile.y },
           tileInfo,
-          top: tileInfo.exits.topRight,
-          right: tileInfo.exits.right,
-          bottom: tileInfo.exits.bottomRight,
+          top: tileInfo.edges.topRight,
+          right: tileInfo.edges.right,
+          bottom: tileInfo.edges.bottomRight,
         }
       }
       // Vertical down
       if((x - y) % 4 == 3 || (x - y) % 4 == -1) {
-        const constraints = { exits: {} };
+        const constraints = { edges: {} };
 
         if(mapData[`${x-1}_${y}`] != undefined) {
-          constraints.exits.topLeft = mapData[`${x-1}_${y}`].right;
+          constraints.edges.topLeft = mapData[`${x-1}_${y}`].right;
         }
         if(mapData[`${x}_${y-1}`] != undefined) {
-          constraints.exits.top = mapData[`${x}_${y-1}`].bottom;
+          constraints.edges.top = mapData[`${x}_${y-1}`].bottom;
         }
 
         let validTiles = getValidTiles(constraints, 'vertical');
@@ -318,38 +318,41 @@ function drawMap() {
         const tileInfo = tileInfos.vertical[`${randomTile.x}_${randomTile.y}`];
 
         const { x:tile_coords_x, y:tile_coords_y } = tilePosToPixelCoordinates(randomTile.x, randomTile.y, false);
-        ctx.drawImage(image, tile_coords_x+1, tile_coords_y+1, tile_size, tile_size*2,
-          x * tile_size * zoom, y * tile_size * zoom,
-          tile_size*zoom, tile_size*2*zoom);
+        ctx.drawImage(image, tile_coords_x+1, tile_coords_y+1, tileSize, tileSize*2,
+          x * tileSize * zoom, y * tileSize * zoom,
+          tileSize*zoom, tileSize*2*zoom);
         
         mapData[`${x}_${y}`] = {
           tilePos: { type: 'vertical', x:randomTile.x, y:randomTile.y },
           tileInfo,
-          left: tileInfo.exits.topLeft,
-          top: tileInfo.exits.top,
-          right: tileInfo.exits.topRight,
+          left: tileInfo.edges.topLeft,
+          top: tileInfo.edges.top,
+          right: tileInfo.edges.topRight,
         }
         mapData[`${x}_${y+1}`] = {
           tilePos: { type: 'vertical', x:randomTile.x, y:randomTile.y },
           tileInfo,
-          left: tileInfo.exits.bottomLeft,
-          bottom: tileInfo.exits.bottom,
-          right: tileInfo.exits.bottomRight,
+          left: tileInfo.edges.bottomLeft,
+          bottom: tileInfo.edges.bottom,
+          right: tileInfo.edges.bottomRight,
         }
       }
     }
   }
 }
-
+/* 
+Input is the tile position (e.g. 2, 1 = second from the left, first from top) and
+returns the coordinates of the topleft pixel of that tile.
+*/
 function tilePosToPixelCoordinates(tx, ty, horizontal) {
   let x, y;
   if(horizontal) {
-    x = tx * tile_size * 2 + 3 * tx;
-    y = ty * tile_size + 3 * ty + 2;
+    x = tx * tileSize * 2 + 3 * tx;
+    y = ty * tileSize + 3 * ty + 2;
   } else {
-    const offset_vertical_tiles_start = num_tiles_h_y * (tile_size + 3) + 4;
-    x = tx * tile_size + 3 * tx;
-    y = ty * tile_size * 2 + 3 * ty;
+    const offset_vertical_tiles_start = num_tiles_h_y * (tileSize + 3) + 4;
+    x = tx * tileSize + 3 * tx;
+    y = ty * tileSize * 2 + 3 * ty;
     y += offset_vertical_tiles_start;
   }
   return { x, y }
@@ -365,57 +368,57 @@ function getPixelData(imageData, x, y, imageWidth) {
 
 function getTileInfo(tx, ty, horizontal) {
   let points_h = {
-    info: {
+    corners: {
       topLeft: { x: 0, y: 0 },
-      top: { x: tile_size, y: 0 },
-      topRight: { x: tile_size*2+1, y: 0 },
-      bottomLeft: { x: 0, y: tile_size+1 },
-      bottom: { x: tile_size, y: tile_size+1 },
-      bottomRight: { x: tile_size*2+1, y: tile_size+1 },
+      top: { x: tileSize, y: 0 },
+      topRight: { x: tileSize*2+1, y: 0 },
+      bottomLeft: { x: 0, y: tileSize+1 },
+      bottom: { x: tileSize, y: tileSize+1 },
+      bottomRight: { x: tileSize*2+1, y: tileSize+1 },
     },
-    exits: {
-      topLeft: { x: Math.floor(tile_size * 0.5), y: 0 },
-      topRight: { x: Math.floor(tile_size * 1.5), y: 0 },
-      left: { x: 0, y: Math.floor(tile_size * 0.5) },
-      right: { x: tile_size * 2 + 1, y: Math.floor(tile_size * 0.5) },
-      bottomLeft: { x: Math.floor(tile_size * 0.5), y: tile_size + 1 },
-      bottomRight: { x: Math.floor(tile_size * 1.5), y: tile_size + 1 },
+    edges: {
+      topLeft: { x: Math.floor(tileSize * 0.5), y: 0 },
+      topRight: { x: Math.floor(tileSize * 1.5), y: 0 },
+      left: { x: 0, y: Math.floor(tileSize * 0.5) },
+      right: { x: tileSize * 2 + 1, y: Math.floor(tileSize * 0.5) },
+      bottomLeft: { x: Math.floor(tileSize * 0.5), y: tileSize + 1 },
+      bottomRight: { x: Math.floor(tileSize * 1.5), y: tileSize + 1 },
     }
   }
 
   let points_v = {
-    info: {
+    corners: {
       topLeft: { x: 0, y: 0 },
-      topRight: { x: tile_size+1, y: 0 },
-      left: { x: 0, y: tile_size },
-      right: { x: tile_size+1, y: tile_size },
-      bottomLeft: { x: 0, y: tile_size*2+1 },
-      bottomRight: { x: tile_size+1, y: tile_size*2+1 },
+      topRight: { x: tileSize+1, y: 0 },
+      left: { x: 0, y: tileSize },
+      right: { x: tileSize+1, y: tileSize },
+      bottomLeft: { x: 0, y: tileSize*2+1 },
+      bottomRight: { x: tileSize+1, y: tileSize*2+1 },
     },
-    exits: {
-      topLeft: { x: 0, y: Math.floor(tile_size * 0.5) },
-      top: { x: Math.floor(tile_size * 0.5), y: 0 },
-      topRight: { x: tile_size+1, y: Math.floor(tile_size * 0.5) },
-      bottomLeft: { x: 0, y: Math.floor(tile_size * 1.5) },
-      bottom: { x: Math.floor(tile_size * 0.5), y: tile_size*2 + 1 },
-      bottomRight: { x: tile_size+1, y: Math.floor(tile_size * 1.5) },
+    edges: {
+      topLeft: { x: 0, y: Math.floor(tileSize * 0.5) },
+      top: { x: Math.floor(tileSize * 0.5), y: 0 },
+      topRight: { x: tileSize+1, y: Math.floor(tileSize * 0.5) },
+      bottomLeft: { x: 0, y: Math.floor(tileSize * 1.5) },
+      bottom: { x: Math.floor(tileSize * 0.5), y: tileSize*2 + 1 },
+      bottomRight: { x: tileSize+1, y: Math.floor(tileSize * 1.5) },
     }
   }
 
   const points = horizontal ? points_h : points_v;
 
   let tileCoords = tilePosToPixelCoordinates(tx, ty, horizontal);
-  for(let [key, value] of Object.entries(points.info)) {
+  for(let [key, value] of Object.entries(points.corners)) {
     let x = tileCoords.x + value.x;
     let y = tileCoords.y + value.y;    
     const [ a, r, g, b ] = getPixelData(imageData.data, x, y, imageData.width, imageData.height);
-    points.info[key] = fullColorHex(r, g, b);
+    points.corners[key] = fullColorHex(r, g, b);
   }
-  for(let [key, value] of Object.entries(points.exits)) {
+  for(let [key, value] of Object.entries(points.edges)) {
     let x = tileCoords.x + value.x;
     let y = tileCoords.y + value.y;    
     const [ a, r, g, b ] = getPixelData(imageData.data, x, y, imageData.width, imageData.height);
-    points.exits[key] = fullColorHex(r, g, b);
+    points.edges[key] = fullColorHex(r, g, b);
   }
 
   return points;
