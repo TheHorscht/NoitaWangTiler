@@ -5,6 +5,6 @@ ghpages.publish('dist', err => {
         console.log('Error publishing to gh-pages:');
         console.log(err);
     } else {
-        console.log('Successfully published to gh-pages!');
+        console.log('Successfully published to gh-pages: https://TheHorscht.github.io/NoitaWangTiler');
     }
 });
