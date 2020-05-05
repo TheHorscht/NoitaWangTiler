@@ -54,7 +54,12 @@ window.addEventListener('load', () => {
     const tileY = Math.floor(mouseY / (tileSize * zoom));
     const idk = tileX - tileY;
     
+    if(mapData[`${tileX}_${tileY}`] != undefined) {
     highlightSpan.innerText = (mapData[`${tileX}_${tileY}`].tilePos.x + 1) + ',' + (mapData[`${tileX}_${tileY}`].tilePos.y + 1);
+      highlight.style.visibility = 'initial';
+    } else {
+      highlight.style.visibility = 'hidden';
+    }
     if(idk % 4 == 0) {
       highlight.style.width = tileSize * 2 * zoom + 'px';
       highlight.style.height = tileSize * zoom + 'px';
