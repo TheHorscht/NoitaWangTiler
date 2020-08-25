@@ -54,7 +54,12 @@ window.addEventListener('load', () => {
     const tileY = Math.floor(mouseY / (tileSize * zoom));
     const idk = tileX - tileY;
     
+    if(mapData[`${tileX}_${tileY}`] != undefined) {
     highlightSpan.innerText = (mapData[`${tileX}_${tileY}`].tilePos.x + 1) + ',' + (mapData[`${tileX}_${tileY}`].tilePos.y + 1);
+      highlight.style.visibility = 'initial';
+    } else {
+      highlight.style.visibility = 'hidden';
+    }
     if(idk % 4 == 0) {
       highlight.style.width = tileSize * 2 * zoom + 'px';
       highlight.style.height = tileSize * zoom + 'px';
@@ -94,6 +99,7 @@ image.addEventListener('load', () => {
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   
   const wangData = parseImageData(imageData.data);
+  console.log(wangData);
   tileSize = wangData.tileSize;
   num_tiles_h_x = wangData.count_h_x;
   num_tiles_h_y = wangData.count_h_y;
@@ -257,6 +263,9 @@ function drawMap() {
 
   let amountToDrawX = canvas.width / tileSize / zoom;
   let amountToDrawY = canvas.height / tileSize / zoom;  
+
+  console.log(amountToDrawX);
+  console.log(canvas.height);
 
   for(let y = -1; y < amountToDrawY; y++) {
     for(let x = -1; x < amountToDrawX; x++) {
