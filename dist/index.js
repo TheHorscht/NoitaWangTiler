@@ -4,6 +4,7 @@ const input = document.querySelector('#input');
 const canvas = document.querySelector('#canvas');
 const image = document.querySelector('#image');
 const zoomSlider = document.querySelector('#zoom');
+const brightnessSlider = document.querySelector('#brightness');
 const seedInput = document.querySelector('#seed');
 const loadSeedButton = document.querySelector('input#loadSeed');
 const newSeedButton = document.querySelector('input#newSeed');
@@ -130,6 +131,10 @@ zoomSlider.addEventListener('input', () => {
     highlight.className = 'zoom-level-' + zoomSlider.value;
     drawMap();
   }
+});
+
+brightnessSlider.addEventListener('input', () => {
+  canvas.style.filter = `brightness(${brightnessSlider.value})`;
 });
 
 loadSeedButton.addEventListener('click', () => {
