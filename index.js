@@ -4,6 +4,7 @@ const input = document.querySelector('#input');
 const canvas = document.querySelector('#canvas');
 const image = document.querySelector('#image');
 const zoomSlider = document.querySelector('#zoom');
+const brightnessSlider = document.querySelector('#brightness');
 const seedInput = document.querySelector('#seed');
 const loadSeedButton = document.querySelector('input#loadSeed');
 const newSeedButton = document.querySelector('input#newSeed');
@@ -99,7 +100,6 @@ image.addEventListener('load', () => {
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   
   const wangData = parseImageData(imageData.data);
-  console.log(wangData);
   tileSize = wangData.tileSize;
   num_tiles_h_x = wangData.count_h_x;
   num_tiles_h_y = wangData.count_h_y;
@@ -131,6 +131,10 @@ zoomSlider.addEventListener('input', () => {
     highlight.className = 'zoom-level-' + zoomSlider.value;
     drawMap();
   }
+});
+
+brightnessSlider.addEventListener('input', () => {
+  canvas.style.filter = `brightness(${brightnessSlider.value})`;
 });
 
 loadSeedButton.addEventListener('click', () => {
@@ -263,9 +267,6 @@ function drawMap() {
 
   let amountToDrawX = canvas.width / tileSize / zoom;
   let amountToDrawY = canvas.height / tileSize / zoom;  
-
-  console.log(amountToDrawX);
-  console.log(canvas.height);
 
   for(let y = -1; y < amountToDrawY; y++) {
     for(let x = -1; x < amountToDrawX; x++) {
