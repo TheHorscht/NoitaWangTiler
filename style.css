@@ -33,6 +33,7 @@ img {
   font-size: 20px;
   box-sizing: border-box;
   padding: 1px 3px;
+  z-index: 1;
 }
 #highlight.zoom-level-1 {
   font-size: 8px;
